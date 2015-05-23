@@ -1,0 +1,10 @@
+target remote localhost:1234
+b main
+b thread.c:thread_init
+b synch.c:lock_release
+b synch.c:lock_acquire
+b thread.c:thread_set_priority
+b thread.c:thread_yield
+b thread.c:schedule
+b thread.c:thread_schedule_tail
+b init.c:paging_init
