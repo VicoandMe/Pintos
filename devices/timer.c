@@ -7,7 +7,8 @@
 #include "threads/interrupt.h"
 #include "threads/synch.h"
 #include "threads/thread.h"
-  
+#include "filesys/cache.h"  
+
 /* See [8254] for hardware details of the 8254 timer chip. */
 
 #if TIMER_FREQ < 19
@@ -183,6 +184,9 @@ timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
   enum intr_level old_level = intr_disable();
+ // if(ticks% (5*TIMER_FREQ) == 0) {
+ //   thread_func_write_back(NULL);
+ // }
   thread_foreach(checkall,NULL);/*find and unblock the threads which are ready*/
   intr_set_level (old_level);
   thread_tick();/*start the first thread in the list*/

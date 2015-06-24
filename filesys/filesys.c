@@ -6,7 +6,8 @@
 #include "filesys/free-map.h"
 #include "filesys/inode.h"
 #include "filesys/directory.h"
-
+#include "filesys/cache.h"
+#include "threads/malloc.h"
 /* Partition that contains the file system. */
 struct block *fs_device;
 
@@ -22,6 +23,8 @@ filesys_init (bool format)
     PANIC ("No file system device found, can't initialize file system.");
 
   inode_init ();
+  filesys_cache_init();
+
   free_map_init ();
 
   if (format) 
@@ -35,9 +38,10 @@ filesys_init (bool format)
 void
 filesys_done (void) 
 {
+  filesys_cache_write_to_disk(true);
   free_map_close ();
 }
-
+
 /* Creates a file named NAME with the given INITIAL_SIZE.
    Returns true if successful, false otherwise.
    Fails if a file named NAME already exists,
